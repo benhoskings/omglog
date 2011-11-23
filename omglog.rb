@@ -15,9 +15,9 @@ LOG_REGEX = /(.*)\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u000
 # "*   7c3240d  (HEAD, origin/master, origin/HEAD, master) 'Merge branch 'versions'' 'Ben Hoskings' '16 minutes ago'"
 
 def omglog
-  `#{LOG_CMD} -$(tput lines)`.tap {|log|
-    cols = `tput cols`.chomp.to_i
-    puts log.split("\n").map {|l|
+  rows, cols = `tput lines; tput cols`.scan(/\d+/).map(&:to_i)
+  `#{LOG_CMD} -#{rows}`.tap {|log|
+    puts log.split("\n")[0...rows].map {|l|
       commit = l.scan(LOG_REGEX).flatten.map(&:to_s)
       commit.any? ? render_commit(commit, cols) : l
     }.join("\n")
