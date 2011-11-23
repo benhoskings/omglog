@@ -17,10 +17,10 @@ LOG_REGEX = /(.*)\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u000
 def omglog
   `#{LOG_CMD} -$(tput lines)`.tap {|log|
     cols = `tput cols`.chomp.to_i
-    log.split("\n").map {|l|
+    puts log.split("\n").map {|l|
       commit = l.scan(LOG_REGEX).flatten.map(&:to_s)
       commit.any? ? render_commit(commit, cols) : l
-    }
+    }.join("\n")
   }
 end
 
@@ -38,7 +38,7 @@ def size_commit commit, cols
     else
       commit[-1]
     end
-  }.tapp
+  }
 end
 
 omglog
