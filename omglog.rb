@@ -18,7 +18,8 @@ def omglog
   `#{LOG_CMD} -$(tput lines)`.tap {|log|
     cols = `tput cols`.chomp.to_i
     log.split("\n").map {|l|
-      render_commit l.scan(LOG_REGEX).flatten.map(&:to_s), cols
+      commit = l.scan(LOG_REGEX).flatten.map(&:to_s)
+      commit.any? ? render_commit(commit, cols) : l
     }
   }
 end
