@@ -19,10 +19,10 @@ abort("Run with a single argument (the directory to omglog).") unless ARGV.lengt
 def omglog
   rows, cols = `tput lines; tput cols`.scan(/\d+/).map(&:to_i)
   `#{LOG_CMD} -#{rows}`.tap {|log|
-    puts CLEAR + log.split("\n")[0...(rows - 1)].map {|l|
+    print CLEAR + log.split("\n")[0...(rows - 1)].map {|l|
       commit = l.scan(LOG_REGEX).flatten.map(&:to_s)
       commit.any? ? render_commit(commit, cols) : l
-    }.join("\n")
+    }.join("\n") + "\n" + "\e[#{GREY}mupdated #{Time.now.strftime("%a %H:%M:%S")}\e[m ".rjust(cols + 8)
   }
 end
 
