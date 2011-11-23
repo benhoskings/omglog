@@ -1,14 +1,14 @@
 require 'rb-fsevent'
 
-LOG_CMD = %{git log --all --graph --pretty="format:%h%d \2%an,\3 \2%ar\3 \2%s\3"}
+LOG_CMD = %{git log --all --graph --pretty="format:%h%d\2 %an,\3\2 %ar\3\2 %s\3"}
 
 LOG_REGEX = %r{
-    ([*|/\\_\-.\s]+) # graph
- \s ([\w]{7,40})     # ref
-(\s \(.*\))?         # decorations
- \s \u0002(.*)\u0003 # author
- \s \u0002(.*)\u0003 # timestamp
- \s \u0002(.*)\u0003 # message
+  ([*|/\\_\-.\s]+) # graph
+  (\s[\w]{7,40})   # ref
+  (\s\(.*\))?      # decorations
+  \u0002(.*)\u0003 # author
+  \u0002(.*)\u0003 # timestamp
+  \u0002(.*)\u0003 # message
 }x
 
 CLEAR = "\e[2J"
@@ -27,7 +27,7 @@ def omglog
 end
 
 def render_commit commit, cols
-  length = commit.map(&:length).inject(&:+) + commit.length - 1
+  length = commit.map(&:length).inject(&:+)
   puts "#{length}: #{commit.inspect}"
 end
 
