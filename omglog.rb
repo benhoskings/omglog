@@ -31,6 +31,7 @@ def render_commit commit, cols
 end
 
 def arrange_commit commit, cols
+  commit[0].chomp!(' ')
   room = [cols - commit[0..-2].map(&:length).inject(&:+), SHORTEST_MESSAGE].max
   commit.tap {|commit|
     commit[3, 0] = if commit[-1].length > room
