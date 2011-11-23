@@ -1,3 +1,5 @@
+# coding: utf-8
+
 require 'rb-fsevent'
 
 class Object; def tapp; tap { puts inspect } end end
