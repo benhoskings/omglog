@@ -25,18 +25,18 @@ def omglog
 end
 
 def render_commit commit, cols
-  size_commit(commit, cols)
+  [nil, YELLOW, BLUE, '', GREY].map {|c| "\e[#{c}m" if c }.zip(
+    arrange_commit(commit, cols)
+  ).join + "\e[m"
 end
 
-def size_commit commit, cols
-  lengths = commit.map(&:length)
-  length = lengths.inject(&:+)
-  message_length = [cols - lengths[0..-2].inject(&:+), SHORTEST_MESSAGE].max
+def arrange_commit commit, cols
+  room = [cols - commit[0..-2].map(&:length).inject(&:+), SHORTEST_MESSAGE].max
   commit.tap {|commit|
-    commit[-1] = if commit[-1].length > message_length
-      commit[-1][0...(message_length - 1)] + '…'
+    commit[3, 0] = if commit[-1].length > room
+      commit.pop[0...(room - 1)] + '…'
     else
-      commit[-1]
+      commit.pop
     end
   }
 end
