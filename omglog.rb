@@ -18,8 +18,7 @@ CLEAR = "\e[2J"
 # "*   7c3240d  (HEAD, origin/master, origin/HEAD, master) 'Merge branch 'versions'' 'Ben Hoskings' '16 minutes ago'"
 
 def omglog
-  rows = (`tput lines`.to_i * 0.7).floor
-  `#{LOG_CMD} -#{rows}`.tap {|log|
+  `#{LOG_CMD} -$(tput lines)`.tap {|log|
     STDOUT.puts CLEAR + log
   }
 end
