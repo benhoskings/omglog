@@ -1,5 +1,7 @@
 require 'rb-fsevent'
 
+class Object; def tapp; tap { puts inspect } end end
+
 LOG_CMD = %{git log --all --graph --pretty="format:%h%d\2 %an,\3\2 %ar\3\2 %s\3"}
 
 LOG_REGEX = %r{
