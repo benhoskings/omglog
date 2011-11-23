@@ -45,6 +45,8 @@ def arrange_commit commit, cols
   }
 end
 
+omglog
+
 FSEvent.new.tap {|fsevent|
   fsevent.watch(File.join(ARGV[0], '.git')) {|directories|
     omglog
