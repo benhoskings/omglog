@@ -2,18 +2,11 @@ require 'rb-fsevent'
 
 class Object; def tapp; tap { puts inspect } end end
 
-SHORTEST_MESSAGE = 12
-LOG_CMD = %{git log --all --graph --pretty="format:%h%d\2 %an,\3\2 %ar\3\2 %s\3"}
-LOG_REGEX = %r{
-  ([*|/\\_\-.\s]+) # graph
-  (\s[\w]{7,40})   # ref
-  (\s\(.*\))?      # decorations
-  \u0002(.*)\u0003 # author
-  \u0002(.*)\u0003 # timestamp
-  \u0002(.*)\u0003 # message
-}x
-
 CLEAR = "\e[2J"
+YELLOW, BLUE, GREY = 33, 34, 37
+SHORTEST_MESSAGE = 12
+LOG_CMD = %{git log --all --graph --color --pretty="format:\2 %h\3\2%d\3\2 %an, %ar\3\2 %s\3"}
+LOG_REGEX = /(.*)\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003/
 
 # example `git log` output
 # "*   \e[33m7c3240d\e[34m (HEAD, origin/master, origin/HEAD, master)\e[m Merge branch 'versions' \e[37m Ben Hoskings, 11 minutes ago\e[m"
