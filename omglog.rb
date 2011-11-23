@@ -4,7 +4,7 @@ require 'rb-fsevent'
 
 class Object; def tapp; tap { puts inspect } end end
 
-CLEAR = "\e[2J"
+CLEAR = "\e[2J\e[H"
 YELLOW, BLUE, GREY = 33, 34, 37
 SHORTEST_MESSAGE = 12
 LOG_CMD = %{git log --all --graph --color --pretty="format:\2 %h\3\2%d\3\2 %an, %ar\3\2 %s\3"}
@@ -19,7 +19,7 @@ abort("Run with a single argument (the directory to omglog).") unless ARGV.lengt
 def omglog
   rows, cols = `tput lines; tput cols`.scan(/\d+/).map(&:to_i)
   `#{LOG_CMD} -#{rows}`.tap {|log|
-    puts log.split("\n")[0...(rows - 1)].map {|l|
+    puts CLEAR + log.split("\n")[0...(rows - 1)].map {|l|
       commit = l.scan(LOG_REGEX).flatten.map(&:to_s)
       commit.any? ? render_commit(commit, cols) : l
     }.join("\n")
