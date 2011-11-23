@@ -2,8 +2,8 @@ require 'rb-fsevent'
 
 class Object; def tapp; tap { puts inspect } end end
 
+SHORTEST_MESSAGE = 12
 LOG_CMD = %{git log --all --graph --pretty="format:%h%d\2 %an,\3\2 %ar\3\2 %s\3"}
-
 LOG_REGEX = %r{
   ([*|/\\_\-.\s]+) # graph
   (\s[\w]{7,40})   # ref
@@ -29,8 +29,20 @@ def omglog
 end
 
 def render_commit commit, cols
-  length = commit.map(&:length).inject(&:+)
-  puts "#{length}: #{commit.inspect}"
+  size_commit(commit, cols)
+end
+
+def size_commit commit, cols
+  lengths = commit.map(&:length)
+  length = lengths.inject(&:+)
+  message_length = [cols - lengths[0..-2].inject(&:+), SHORTEST_MESSAGE].max
+  commit.tap {|commit|
+    commit[-1] = if commit[-1].length > message_length
+      commit[-1][0...(message_length - 1)] + '…'
+    else
+      commit[-1]
+    end
+  }.tapp
 end
 
 omglog
