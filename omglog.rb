@@ -7,7 +7,7 @@ class Object; def tapp; tap { puts inspect } end end
 CLEAR = "\e[2J\e[H"
 YELLOW, BLUE, GREY = 33, 34, 37
 SHORTEST_MESSAGE = 12
-LOG_CMD = %{git log --all --graph --color --pretty="format:\2 %h\3\2%d\3\2 %an, %ar\3\2 %s\3"}
+LOG_CMD = %{git log --all --date-order --graph --color --pretty="format:\2 %h\3\2%d\3\2 %an, %ar\3\2 %s\3"}
 LOG_REGEX = /(.*)\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003/
 
 # example `git log` output
