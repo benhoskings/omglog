@@ -19,7 +19,16 @@ CLEAR = "\e[2J"
 
 def omglog
   `#{LOG_CMD} -$(tput lines)`.tap {|log|
-    STDOUT.puts CLEAR + log
+    cols = `tput cols`.chomp.to_i
+    log.split("\n").map {|l|
+      render_commit l.scan(LOG_REGEX).flatten.map(&:to_s), cols
+    }
   }
 end
 
+def render_commit commit, cols
+  length = commit.map(&:length).inject(&:+) + commit.length - 1
+  puts "#{length}: #{commit.inspect}"
+end
+
+omglog
