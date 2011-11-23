@@ -14,6 +14,8 @@ LOG_REGEX = /(.*)\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u000
 # "*   \e[33m7c3240d\e[34m (HEAD, origin/master, origin/HEAD, master)\e[m Merge branch 'versions' \e[37m Ben Hoskings, 11 minutes ago\e[m"
 # "*   7c3240d  (HEAD, origin/master, origin/HEAD, master) 'Merge branch 'versions'' 'Ben Hoskings' '16 minutes ago'"
 
+abort("Run with a single argument (the directory to omglog).") unless ARGV.length == 1
+
 def omglog
   rows, cols = `tput lines; tput cols`.scan(/\d+/).map(&:to_i)
   `#{LOG_CMD} -#{rows}`.tap {|log|
@@ -43,4 +45,9 @@ def arrange_commit commit, cols
   }
 end
 
-omglog
+FSEvent.new.tap {|fsevent|
+  fsevent.watch(File.join(ARGV[0], '.git')) {|directories|
+    omglog
+  }
+  fsevent.run
+}
