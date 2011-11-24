@@ -32,7 +32,7 @@ def arrange_commit commit, cols
     commit[3, 0] = if commit[-1].length > room
       commit.pop[0...(room - 1)] + '…'
     else
-      commit.pop
+      commit.pop.ljust(room)
     end
   }
 end
