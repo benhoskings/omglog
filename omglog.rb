@@ -14,7 +14,8 @@ LOG_REGEX = /(.*)\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u000
 # "*   \e[33m7c3240d\e[34m (HEAD, origin/master, origin/HEAD, master)\e[m Merge branch 'versions' \e[37m Ben Hoskings, 11 minutes ago\e[m"
 # "*   7c3240d  (HEAD, origin/master, origin/HEAD, master) 'Merge branch 'versions'' 'Ben Hoskings' '16 minutes ago'"
 
-abort("Run with a single argument (the directory to omglog).") unless ARGV.length == 1
+abort("Run omglog at the root of the git repo you'd like to watch.") if (ARGV & %w[-h --help help]).any?
+abort("The current directory doesn't look like the root of a git repo.") unless File.directory?('.git')
 
 def omglog
   rows, cols = `tput lines; tput cols`.scan(/\d+/).map(&:to_i)
@@ -48,7 +49,7 @@ end
 omglog
 
 FSEvent.new.tap {|fsevent|
-  fsevent.watch(File.join(ARGV[0], '.git')) {|directories|
+  fsevent.watch('.git') {|directories|
     omglog
   }
   fsevent.run
