@@ -2,7 +2,7 @@
 require 'rb-fsevent'
 
 CLEAR = "\e[2J\e[H"
-YELLOW, BLUE, GREY, BOLD = 33, 34, 37, 1
+YELLOW, BLUE, GREY, HIGHLIGHT = '0;33', '0;34', '0;90', '1;30;47'
 SHORTEST_MESSAGE = 12
 LOG_CMD = %{git log --all --date-order --graph --color --pretty="format:\2 %h\3\2%d\3\2 %an, %ar\3\2 %s\3"}
 LOG_REGEX = /(.*)\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003/
@@ -18,7 +18,7 @@ def omglog
 end
 
 def render_commit commit, cols
-  row_highlight = commit[2][/[^\/]HEAD\b/] ? BOLD : YELLOW
+  row_highlight = commit[2][/[^\/]HEAD\b/] ? HIGHLIGHT : YELLOW
   [nil, row_highlight, BLUE, '', GREY].map {|c| "\e[#{c}m" if c }.zip(
     arrange_commit(commit, cols)
   ).join + "\e[m"
