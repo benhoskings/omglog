@@ -24,6 +24,10 @@ view.setCustomUserAgent 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_2; en-us
 window.display
 window.orderFrontRegardless
 
+def run_git_log
+  output = `cd #{PROJ_ROOT} && git log --all --date-order --graph --color --pretty="format: \2%h\3\2%d\3\2 %an, %ar\3\2 %s\3" -100`
+  output.gsub(/\e\[[\d;]*m/,'')
+end
 
 frame = view.mainFrame
 
@@ -38,7 +42,7 @@ def render(frame)
   </head>
   <body>
     <pre>
-#{`cd #{PROJ_ROOT} && git log --all --date-order --graph --color --pretty="format: \2%h\3\2%d\3\2 %an, %ar\3\2 %s\3"`}
+#{run_git_log}
     </pre>
   </body>
 </html>
