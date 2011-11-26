@@ -33,7 +33,14 @@ class Omglog
         font-size: 14px;
         color: hsl(0, 0%, 65%);
       }
-      .line span { display: inline-block; }
+      .line {
+        overflow: hidden;
+      }
+      .line >span {
+        display: block;
+        float: left;
+        margin-right: 8px;
+      }
       .dot {
         -webkit-transform: scaleY(0.8) translateY(1px) scale(1.8);
         color: hsl(0, 0%, 10%);
@@ -52,11 +59,16 @@ class Omglog
       .tags {
         color: rgb(73, 122, 191);
       }
-      .author { float: right;
+      .line >span.author {
+        float: right;
         text-shadow: 1px 1px 0 hsla(0, 100%, 0%, 1.0);
       }
-      .message {
+      .line span.message {
         text-shadow: 1px 1px 0 hsla(0, 100%, 0%, 1.0);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        float: none;
       }
       .head {
         background-color: hsl(215, 48%, 44%);
