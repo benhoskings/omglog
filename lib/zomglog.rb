@@ -15,9 +15,9 @@ class Zomglog
       #end
       @blk.call
     end
-    #stream = FSEventStreamCreate(KCFAllocatorDefault, callback, nil, [@dir], KFSEventStreamEventIdSinceNow, 0.0, 0)
-    #FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(), KCFRunLoopDefaultMode)
-    #FSEventStreamStart(stream)
+    stream = FSEventStreamCreate(KCFAllocatorDefault, callback, nil, [@dir], KFSEventStreamEventIdSinceNow, 0.0, 0)
+    FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(), KCFRunLoopDefaultMode)
+    FSEventStreamStart(stream)
   end
 
   def shell_out
