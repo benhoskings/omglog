@@ -22,7 +22,6 @@ class Omglog
         win.will_close { exit }
       end
     end
-
   end
 
   # file/open
@@ -34,7 +33,10 @@ class Omglog
     if dialog.runModalForDirectory(nil, file:nil) == NSOKButton
     # if we had a allowed for the selection of multiple items
     # we would have want to loop through the selection
-      @log = Zomglog.new(dialog.filenames.first)
+      @log.stop
+      @log = Zomglog.new(dialog.filenames.first) do
+        draw
+      end
       draw
     end
   end

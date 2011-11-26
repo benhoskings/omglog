@@ -5,19 +5,26 @@ LOG_REGEX = /(.*)\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u000
 
 class Zomglog
   def initialize(dir, &blk)
-    @dir = dir
-    @blk = blk
+    @dir = File.expand_path(`cd #{dir} && git rev-parse --git-dir 2> /dev/null`.chomp, dir)
+    if $? == 0
+      @in_git_repo = true
+      @blk = blk
 
-    callback = Proc.new do |stream, client_callback_info, number_of_events, paths_pointer, event_flags, event_ids|
-      #paths_pointer.cast!('*')
-      #number_of_events.times do |n|
-      #  p [paths_pointer[n], event_flags[n], event_ids[n]]
-      #end
-      @blk.call
+      callback = Proc.new do |stream, client_callback_info, number_of_events, paths_pointer, event_flags, event_ids|
+        #paths_pointer.cast!('*')
+        #number_of_events.times do |n|
+        #  p [paths_pointer[n], event_flags[n], event_ids[n]]
+        #end
+        @blk && @blk.call
+      end
+      @stream = FSEventStreamCreate(KCFAllocatorDefault, callback, nil, [@dir], KFSEventStreamEventIdSinceNow, 0.0, 0)
+      FSEventStreamScheduleWithRunLoop(@stream, CFRunLoopGetCurrent(), KCFRunLoopDefaultMode)
+      FSEventStreamStart(@stream)
     end
-    stream = FSEventStreamCreate(KCFAllocatorDefault, callback, nil, [@dir], KFSEventStreamEventIdSinceNow, 0.0, 0)
-    FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(), KCFRunLoopDefaultMode)
-    FSEventStreamStart(stream)
+  end
+
+  def stop
+    FSEventStreamStop(@stream)
   end
 
   def shell_out
@@ -33,20 +40,24 @@ class Zomglog
   end
 
   def lines
-    to_hash.map do |line|
-      "<div class='line'>" + line.zip(%w[graph sha tags author message]).map do |v, tag|
-        if !v.empty?
-          if tag == 'graph'
-            "<span class='#{tag}'>#{v.gsub(/\*/, "<span class='dot'>•</span>")}</span>"
-          elsif tag == 'tags'
-            "<span class='#{tag}'>#{v.gsub(/HEAD/, "<span class='head'>HEAD</span>")}</span>"
+    if @in_git_repo
+      to_hash.map do |line|
+        "<div class='line'>" + line.zip(%w[graph sha tags author message]).map do |v, tag|
+          if !v.empty?
+            if tag == 'graph'
+              "<span class='#{tag}'>#{v.gsub(/\*/, "<span class='dot'>•</span>")}</span>"
+            elsif tag == 'tags'
+              "<span class='#{tag}'>#{v.gsub(/HEAD/, "<span class='head'>HEAD</span>")}</span>"
+            else
+              "<span class='#{tag}'>#{v}</span>"
+            end
           else
-            "<span class='#{tag}'>#{v}</span>"
+            ""
           end
-        else
-          ""
-        end
-      end.join("\n") + "</div>"
+        end.join("\n") + "</div>"
+      end.join("\n")
+    else
+      "<div class='line'>Press ⌘O and choose a git project</div>"
     end
   end
 
@@ -110,7 +121,7 @@ class Zomglog
     </style>
   </head>
   <body>
-    #{lines.join("\n")}
+    #{lines}
   </body>
 </html>
 HTML
