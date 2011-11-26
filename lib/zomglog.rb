@@ -3,8 +3,6 @@
 LOG_CMD = %{git log --all --date-order --graph --pretty="format: \2%h\3\2%d\3\2 %an, %ar\3\2 %s\3" -80}
 LOG_REGEX = /(.*)\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003/
 
-require 'haml'
-
 class Zomglog
   def initialize(dir, &blk)
     @dir = dir
@@ -17,9 +15,9 @@ class Zomglog
       #end
       @blk.call
     end
-    stream = FSEventStreamCreate(KCFAllocatorDefault, callback, nil, [@dir], KFSEventStreamEventIdSinceNow, 0.0, 0)
-    FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(), KCFRunLoopDefaultMode)
-    FSEventStreamStart(stream)
+    #stream = FSEventStreamCreate(KCFAllocatorDefault, callback, nil, [@dir], KFSEventStreamEventIdSinceNow, 0.0, 0)
+    #FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(), KCFRunLoopDefaultMode)
+    #FSEventStreamStart(stream)
   end
 
   def shell_out
@@ -34,11 +32,29 @@ class Zomglog
     }
   end
 
+  def lines
+    to_hash.map do |line|
+      "<div class='line'>" + line.zip(%w[graph sha tags author message]).map do |v, tag|
+        if !v.empty?
+          if tag == 'graph'
+            "<span class='#{tag}'>#{v.gsub(/\*/, "<span class='dot'>•</span>")}</span>"
+          elsif tag == 'tags'
+            "<span class='#{tag}'>#{v.gsub(/HEAD/, "<span class='head'>HEAD</span>")}</span>"
+          else
+            "<span class='#{tag}'>#{v}</span>"
+          end
+        else
+          ""
+        end
+      end.join("\n") + "</div>"
+    end
+  end
+
   def to_html
-    Haml::Engine.new(<<HAML).render(binding)
-%html
-  %head
-    :css
+    <<HTML
+<html>
+  <head>
+    <style>
       body {
         #background-color: hsl(200, 57%, 8%);
         #background-color: rgb(29,29,29);
@@ -91,19 +107,12 @@ class Zomglog
         border-radius: 3px;
         color: hsl(0, 0%, 16%);
       }
-  %body
-    - to_hash.each do |line|
-      %div.line
-        - line.zip(%w[graph sha tags author message]).each do |v, tag|
-          - if !v.empty?
-            - if tag == 'graph'
-              %span{class: tag}= v.gsub(/\\*/,"<span class='dot'>•</span>")
-            - elsif tag == 'tags'
-              %span{class: tag}= v.gsub(/HEAD/,"<span class='head'>HEAD</span>")
-            - else
-              %span{class: tag}= v
-
-
-HAML
+    </style>
+  </head>
+  <body>
+    #{lines.join("\n")}
+  </body>
+</html>
+HTML
   end
 end

@@ -2,10 +2,8 @@ require 'sinatra'
 require 'haml'
 require 'coffee-script'
 require 'sinatra/reloader'
+require './lib/zomglog.rb'
 
-require File.expand_path('../zomglog', __FILE__)
-
-also_reload '*.rb'
 also_reload 'lib/*.rb'
 
 get '/' do
