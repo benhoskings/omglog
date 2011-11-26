@@ -7,6 +7,9 @@ framework 'WebKit'
 framework 'CoreServices'
 
 class AppDelegate
+  def windowWillClose(notification)
+    exit
+  end
 end
 
 app = NSApplication.sharedApplication
