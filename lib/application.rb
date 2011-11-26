@@ -7,11 +7,37 @@ class Omglog
   include HotCocoa
 
   def start
+    @path = "."
     application name: 'Omglog' do |app|
       app.delegate = self
       window frame: [100, 100, 500, 500], title: 'Omglog' do |win|
         win << web_view(layout: { expand: [:width, :height] }) do |wv|
-          wv.mainFrame.loadHTMLString <<HTML, baseURL: nil
+          @wv = wv
+          draw
+        end
+        win.will_close { exit }
+      end
+    end
+  end
+
+  # file/open
+  def on_open(menu)
+    dialog = NSOpenPanel.openPanel
+    dialog.canChooseFiles = false
+    dialog.canChooseDirectories = true
+    dialog.allowsMultipleSelection = false
+    if dialog.runModalForDirectory(nil, file:nil) == NSOKButton
+    # if we had a allowed for the selection of multiple items
+    # we would have want to loop through the selection
+      @path = dialog.filenames.first
+      draw
+    end
+  end
+
+  def draw
+    cmd = %Q{cd #{@path} && git log --all --date-order --graph --pretty="format: \2%h\3\2%d\3\2 %an, %ar\3\2 %s\3" -100}
+    p cmd
+    @wv.mainFrame.loadHTMLString <<HTML, baseURL: nil
 <!DOCTYPE html>
 <html>
   <head>
@@ -21,19 +47,11 @@ class Omglog
   </head>
   <body>
     <pre>
-#{`git log --all --date-order --graph --pretty="format: \2%h\3\2%d\3\2 %an, %ar\3\2 %s\3" -100`}
+#{`#{cmd}`}
     </pre>
   </body>
 </html>
 HTML
-        end
-        win.will_close { exit }
-      end
-    end
-  end
-
-  # file/open
-  def on_open(menu)
   end
 
   # file/new
