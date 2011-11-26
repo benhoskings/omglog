@@ -1,0 +1,52 @@
+# for more information about the fields that can be set on the specification, check out the rdoc:
+#   http://rdoc.info/github/ferrous26/hotcocoa/master/Application/Specification
+#
+Application::Specification.new do |s|
+  s.name       = 'Omglog'
+  s.identifier = 'com.glen.Omglog'
+
+  # The version of the app, usually including the build number.
+  s.version    = '1.0'
+
+  s.icon       = 'resources/HotCocoa.icns'
+  s.resources  = Dir.glob('resources/**/*.*')
+  s.sources    = Dir.glob('lib/**/*.rb')
+
+  # optional copyright
+  # s.copyright = "2011, Your Company"
+
+  # optional short version (in contrast to the full version, the short version should not contain the build number)
+  # s.short_version = "$MAJOR.$MINOR.$PATCHLEVEL"
+
+  # to avoid embedding the standard libs
+  # s.stdlib   = false
+  # alternatively, specify the modules that you wish to include
+  # s.stdlib   = ['base64', 'matrix', 'set']
+
+  # specify which gems you wish to be bundled with your application
+  # hotcocoa is automatically bundled and doesn't need to be specified here
+  # s.gems     = ['rest-client']
+
+  # uncomment if you wish to embed the BridgeSupport files during deployment
+  # useful if you need to deploy the app to OS X 10.6.
+  # s.embed_bs = true
+
+  # uncomment to always make a clean build of the app
+  # s.overwrite = true
+
+  # toggle whether the app is an daemon with UI or a regular app
+  # You can use this flag to hide the dock icon for the app; the
+  # default value is false so that apps will have a dock icon
+  # s.agent    = true
+
+  # uncomment the block below to declare document types for your document-based application
+  # you can declare multiple document types by specifying several declare_doc_type blocks
+  # s.declare_doc_type do |doc_type|
+  #   doc_type.extensions = ["ext"]
+  #   doc_type.icon       = "MyIcon.icns"
+  #   doc_type.name       = "MyProjectDocument"
+  #   doc_type.role       = :viewer # one of [:editor, :viewer, :none]
+  #   doc_type.class      = "MyDocument"
+  # end
+end
+
