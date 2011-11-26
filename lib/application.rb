@@ -35,7 +35,6 @@ class Omglog
   end
 
   def draw
-    cmd = %Q{cd #{@path} && git log --all --date-order --graph --pretty="format: \2%h\3\2%d\3\2 %an, %ar\3\2 %s\3" -100}
     p cmd
     @wv.mainFrame.loadHTMLString <<HTML, baseURL: nil
 <!DOCTYPE html>
