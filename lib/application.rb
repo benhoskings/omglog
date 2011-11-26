@@ -1,6 +1,8 @@
 require 'rubygems' # disable this for a deployed application
 require 'hotcocoa'
 
+framework 'webkit'
+
 class Omglog
   include HotCocoa
 
@@ -8,7 +10,23 @@ class Omglog
     application name: 'Omglog' do |app|
       app.delegate = self
       window frame: [100, 100, 500, 500], title: 'Omglog' do |win|
-        win << label(text: 'Hello from HotCocoa', layout: {start: false})
+        win << web_view(layout: { expand: [:width, :height] }) do |wv|
+          wv.mainFrame.loadHTMLString <<HTML, baseURL: nil
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body { background-color: #CCC; }
+    </style>
+  </head>
+  <body>
+    <pre>
+#{`git log --all --date-order --graph --pretty="format: \2%h\3\2%d\3\2 %an, %ar\3\2 %s\3" -100`}
+    </pre>
+  </body>
+</html>
+HTML
+        end
         win.will_close { exit }
       end
     end
