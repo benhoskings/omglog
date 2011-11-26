@@ -3,9 +3,23 @@
 LOG_CMD = %{git log --all --date-order --graph --pretty="format: \2%h\3\2%d\3\2 %an, %ar\3\2 %s\3" -80}
 LOG_REGEX = /(.*)\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003/
 
-class Omglog
-  def initialize(dir)
+require 'haml'
+
+class Zomglog
+  def initialize(dir, &blk)
     @dir = dir
+    @blk = blk
+
+    callback = Proc.new do |stream, client_callback_info, number_of_events, paths_pointer, event_flags, event_ids|
+      #paths_pointer.cast!('*')
+      #number_of_events.times do |n|
+      #  p [paths_pointer[n], event_flags[n], event_ids[n]]
+      #end
+      @blk.call
+    end
+    stream = FSEventStreamCreate(KCFAllocatorDefault, callback, nil, [@dir], KFSEventStreamEventIdSinceNow, 0.0, 0)
+    FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(), KCFRunLoopDefaultMode)
+    FSEventStreamStart(stream)
   end
 
   def shell_out

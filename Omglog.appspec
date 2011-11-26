@@ -25,7 +25,7 @@ Application::Specification.new do |s|
 
   # specify which gems you wish to be bundled with your application
   # hotcocoa is automatically bundled and doesn't need to be specified here
-  # s.gems     = ['rest-client']
+  s.gems     = ['haml']
 
   # uncomment if you wish to embed the BridgeSupport files during deployment
   # useful if you need to deploy the app to OS X 10.6.

@@ -3,11 +3,15 @@ require 'hotcocoa'
 
 framework 'webkit'
 
+require File.expand_path('../zomglog', __FILE__)
+
 class Omglog
   include HotCocoa
 
   def start
-    @path = "."
+    @log = Zomglog.new(".") do
+      draw
+    end
     application name: 'Omglog' do |app|
       app.delegate = self
       window frame: [100, 100, 500, 500], title: 'Omglog' do |win|
@@ -18,6 +22,7 @@ class Omglog
         win.will_close { exit }
       end
     end
+
   end
 
   # file/open
@@ -29,28 +34,13 @@ class Omglog
     if dialog.runModalForDirectory(nil, file:nil) == NSOKButton
     # if we had a allowed for the selection of multiple items
     # we would have want to loop through the selection
-      @path = dialog.filenames.first
+      @log = Zomglog.new(dialog.filenames.first)
       draw
     end
   end
 
   def draw
-    p cmd
-    @wv.mainFrame.loadHTMLString <<HTML, baseURL: nil
-<!DOCTYPE html>
-<html>
-  <head>
-    <style>
-      body { background-color: #CCC; }
-    </style>
-  </head>
-  <body>
-    <pre>
-#{`#{cmd}`}
-    </pre>
-  </body>
-</html>
-HTML
+    @wv.mainFrame.loadHTMLString @log.to_html, baseURL: nil
   end
 
   # file/new
