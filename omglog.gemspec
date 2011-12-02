@@ -8,4 +8,6 @@ Gem::Specification.new do |s|
   s.files       = ["bin/omglog"]
   s.executables = ['omglog']
   s.homepage    = 'http://github.com/benhoskings/omglog'
+
+  s.add_dependency 'rb-fsevent', '~> 0.4.3'
 end
