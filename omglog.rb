@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'rb-fsevent'
 
-CLEAR = "\e[2J\e[H"
+CLEAR = "\n----\n"
 YELLOW, BLUE, GREY, HIGHLIGHT = '0;33', '0;34', '0;90', '1;30;47'
 SHORTEST_MESSAGE = 12
 LOG_CMD = %{git log --all --date-order --graph --color --pretty="format: \2%h\3\2%d\3\2 %an, %ar\3\2 %s\3"}
