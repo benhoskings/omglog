@@ -45,7 +45,7 @@ def on_change &block
       fsevent.watch('.git', &block)
       fsevent.run
     }
-  elseif is_linux?
+  elsif is_linux?
     INotify::Notifier.new.tap do |notifier|
       notifier.watch('.git', :modify, :recursive, &block)
       ['TERM', 'INT', 'QUIT'].each do |signal|
