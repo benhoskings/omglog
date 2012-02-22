@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 require 'rb-fsevent'
+require 'rb-inotify'
 
 CLEAR = "\n----\n"
 YELLOW, BLUE, GREY, HIGHLIGHT = '0;33', '0;34', '0;90', '1;30;47'
@@ -39,10 +40,32 @@ def arrange_commit commit, cols
 end
 
 def on_change &block
-  FSEvent.new.tap {|fsevent|
-    fsevent.watch('.git', &block)
-    fsevent.run
-  }
+  if is_mac?
+    FSEvent.new.tap {|fsevent|
+      fsevent.watch('.git', &block)
+      fsevent.run
+    }
+  elsif is_linux?
+    INotify::Notifier.new.tap do |notifier|
+      notifier.watch('.git', :modify, :recursive, &block)
+      ['TERM', 'INT', 'QUIT'].each do |signal|
+        trap(signal) do
+          notifier.stop
+          exit(0)
+        end
+      end
+      notifier.run
+    end
+  end
+
+end
+
+def is_mac?
+  RUBY_PLATFORM.downcase.include?("darwin")
+end
+
+def is_linux?
+  RUBY_PLATFORM.downcase.include?("linux")
 end
 
 abort("Run omglog at the root of the git repo you'd like to watch.") if (ARGV & %w[-h --help help]).any?
