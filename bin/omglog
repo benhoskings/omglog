@@ -2,6 +2,8 @@
 # coding: utf-8
 require 'rb-fsevent'
 
+Encoding.default_external = Encoding::UTF_8
+
 CLEAR = "\n----\n"
 YELLOW, BLUE, GREY, HIGHLIGHT = '0;33', '0;34', '0;90', '1;30;47'
 SHORTEST_MESSAGE = 12
