@@ -10,5 +10,5 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://github.com/benhoskings/omglog'
 
   s.add_dependency 'rb-fsevent', '~> 0.4.3'
-  s.add_dependency 'rb-inotify'
+  s.add_dependency 'rb-inotify', '~> 0.8.8'
 end
