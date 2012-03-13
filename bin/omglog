@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+# Support UTF-8 in author names & commit messages, even when
+# the system locale isn't set to UTF-8.
+Encoding.default_external = Encoding::UTF_8 if RUBY_VERSION > '1.8.7'
+
 $:.unshift File.expand_path('../../lib', __FILE__)
 
 require 'omglog'
