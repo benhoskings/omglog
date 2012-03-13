@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.description = "Realtime git logging using fseventsd. omg!"
   s.authors     = ["Ben Hoskings"]
   s.email       = 'ben@hoskings.net'
-  s.files       = ["bin/omglog"]
+  s.files       = `git ls-files bin/ lib/`.split("\n")
   s.executables = ['omglog']
   s.homepage    = 'http://github.com/benhoskings/omglog'
 
