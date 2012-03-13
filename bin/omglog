@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 # coding: utf-8
-require 'rb-fsevent'
-require 'rb-inotify'
 
 CLEAR = "\n----\n"
 YELLOW, BLUE, GREY, HIGHLIGHT = '0;33', '0;34', '0;90', '1;30;47'
@@ -41,11 +39,13 @@ end
 
 def on_change &block
   if is_mac?
+    require 'rb-fsevent'
     FSEvent.new.tap {|fsevent|
       fsevent.watch('.git', &block)
       fsevent.run
     }
   elsif is_linux?
+    require 'rb-inotify'
     INotify::Notifier.new.tap do |notifier|
       notifier.watch('.git', :modify, :recursive, &block)
       ['TERM', 'INT', 'QUIT'].each do |signal|
