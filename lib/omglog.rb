@@ -19,7 +19,10 @@ module Omglog
     def self.run
       rows, cols = `tput lines; tput cols`.scan(/\d+/).map(&:to_i)
       `#{LOG_CMD} -#{rows}`.tap {|log|
-        print CLEAR + log.split("\n")[0...(rows - 1)].map {|l|
+        log_lines = Array.new(rows, '')
+        log_lines.unshift *log.split("\n")
+
+        print CLEAR + log_lines[0...(rows - 1)].map {|l|
           commit = l.scan(LOG_REGEX).flatten.map(&:to_s)
           commit.any? ? render_commit(commit, cols) : l
         }.join("\n") + "\n" + "\e[#{GREY}mupdated #{Time.now.strftime("%a %H:%M:%S")}\e[m ".rjust(cols + 8)
