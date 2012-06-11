@@ -13,12 +13,16 @@ module Omglog
     CLEAR = "\n----\n"
     YELLOW, BLUE, GREY, HIGHLIGHT = '0;33', '0;34', '0;90', '1;30;47'
     SHORTEST_MESSAGE = 12
-    LOG_CMD = %{git log --all --date-order --graph --color --pretty="format: \2%h\3\2%d\3\2 %an, %ar\3\2 %s\3"} + " " + ARGV.join(" ")
+    LOG_CMD = %{git log --all --date-order --graph --color --pretty="format: \2%h\3\2%d\3\2 %an, %ar\3\2 %s\3"}
     LOG_REGEX = /(.*)\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003/
+
+    def self.log_cmd
+      @log_cmd ||= [LOG_CMD].concat(ARGV).join(' ')
+    end
 
     def self.run
       rows, cols = `tput lines; tput cols`.scan(/\d+/).map(&:to_i)
-      `#{LOG_CMD} -#{rows}`.tap {|log|
+      `#{log_cmd} -#{rows}`.tap {|log|
         print CLEAR + log.split("\n")[0...(rows - 1)].map {|l|
           commit = l.scan(LOG_REGEX).flatten.map(&:to_s)
           commit.any? ? render_commit(commit, cols) : l
