@@ -5,9 +5,25 @@ module Omglog
 
   def run_on system
     Omglog::Base.run
+    on_terminal_resize { Omglog::Base.run }
     system.on_change { Omglog::Base.run }
   end
   module_function :run_on
+
+  def on_terminal_resize &block
+    rendering = true
+    trap("WINCH") {
+      # A dragging resize fires lots of WINCH events; this throttles the redraw
+      # and should cause it to (usually) line up with the final dimensions.
+      if rendering
+        rendering = false
+        sleep 0.5
+        rendering = true
+        yield
+      end
+    }
+  end
+  module_function :on_terminal_resize
 
   class Base
     CLEAR = "\n----\n"
