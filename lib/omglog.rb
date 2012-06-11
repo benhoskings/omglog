@@ -1,7 +1,7 @@
 # coding: utf-8
 
 module Omglog
-  VERSION = '0.0.6'
+  VERSION = '0.0.7'
 
   def run_on system
     Omglog::Base.run
