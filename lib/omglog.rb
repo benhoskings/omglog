@@ -17,9 +17,9 @@ module Omglog
       # and should cause it to (usually) line up with the final dimensions.
       if rendering
         rendering = false
-        sleep 0.5
-        rendering = true
+        sleep 0.5        
         yield
+        rendering = true
       end
     }
   end
