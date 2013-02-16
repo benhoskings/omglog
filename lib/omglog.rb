@@ -18,8 +18,8 @@ module Omglog
       if rendering
         rendering = false
         sleep 0.5
-        rendering = true
         yield
+        rendering = true
       end
     }
   end
