@@ -3,6 +3,7 @@ Gem::Specification.new do |s|
   s.version     = '0.0.7'
   s.summary     = "Realtime git logging using fseventsd."
   s.description = "Realtime git logging using fseventsd. omg!"
+  s.license     = 'BSD'
   s.authors     = ["Ben Hoskings"]
   s.email       = 'ben@hoskings.net'
   s.files       = `git ls-files bin/ lib/`.split("\n")
