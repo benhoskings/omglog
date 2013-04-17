@@ -59,6 +59,7 @@ module Omglog
     def self.arrange_commit commit, cols
       commit[0].chomp!(' ')
       commit[-2].sub!(/(\d+)\s(\w)[^\s]+ ago/, '\1\2 ago')
+      commit.each{|c| c.sub!(/\t/, ' ')}
       room = [cols - [commit[0].gsub(/\e\[[\d;]*m/, ''), commit[1..-2]].flatten.map(&:length).inject(&:+), SHORTEST_MESSAGE].max
       commit.tap {|commit|
         commit[-1, 0] = if commit[-1].length > room
