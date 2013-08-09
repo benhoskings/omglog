@@ -68,13 +68,16 @@ module Omglog
     end
 
     def self.arrange_commit commit, cols
-      fixed_part = [commit[GRAPH], commit[REF], commit[DECS], commit[AUTHOR]].join.gsub(/\e\[[\d;]*m/, '').length
-      msg_max = [cols - fixed_part, SHORTEST_MESSAGE].max
+      fixed_part = [commit[GRAPH], commit[REF], commit[AUTHOR]].join.gsub(/\e\[[\d;]*m/, '').length
+      decoration_max = [cols - (fixed_part + [commit[MSG].length, SHORTEST_MESSAGE].min), SHORTEST_MESSAGE].max
+      decoration_length = [commit[DECS].length, decoration_max].min
+      msg_max = [cols - (fixed_part + decoration_length), SHORTEST_MESSAGE].max
       msg_length = [commit[MSG].length, msg_max].min
 
+      decs = (commit[DECS].empty? ? '' : truncate(commit[DECS], decoration_length))
       msg = truncate(commit[MSG], msg_length).ljust(msg_max)
 
-      [commit[GRAPH], commit[REF], commit[DECS], msg, commit[AUTHOR]]
+      [commit[GRAPH], commit[REF], decs, msg, commit[AUTHOR]]
     end
 
     def self.truncate string, length
