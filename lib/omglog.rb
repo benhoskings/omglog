@@ -29,8 +29,9 @@ module Omglog
     CLEAR = "\n----\n"
     YELLOW, BLUE, GREY, HIGHLIGHT = '0;33', '0;34', '0;90', '1;30;47'
     SHORTEST_MESSAGE = 12
-    LOG_CMD = %{git log --all --date-order --graph --color --pretty="format: \2%h\3\2%d\3\2 %an, %ar\3\2 %s\3"}
+    LOG_CMD = %{git log --all --date-order --graph --color --pretty="format: \2%h\3\2%d\3\2 %s\3\2 %an, %ar\3"}
     LOG_REGEX = /(.*)\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003\u0002(.*)\u0003/
+    GRAPH, REF, DECS, MSG, AUTHOR =  0, 1, 2, 3, 4
 
     def self.log_cmd
       @log_cmd ||= [LOG_CMD].concat(ARGV).join(' ')
@@ -52,23 +53,36 @@ module Omglog
     def self.render_commit commit, cols
       row_highlight = commit[2][/[^\/]HEAD\b/] ? HIGHLIGHT : YELLOW
       [nil, row_highlight, BLUE, '', GREY].map {|c| "\e[#{c}m" if c }.zip(
-        arrange_commit(commit, cols)
+        arrange_commit(format_commit(commit), cols)
       ).join + "\e[m"
     end
 
+    def self.format_commit commit
+      [
+        commit[GRAPH].chomp!(' '),
+        commit[REF],
+        commit[DECS],
+        commit[MSG],
+        commit[AUTHOR].sub(/(\d+)\s(\w)[^\s]+ ago/, '\1\2 ago').sub(/^ (\w)\w+\s(\w).*,/, ' \1\2,')
+      ].each {|c| c.gsub(/\t+/, ' ') }
+    end
+
     def self.arrange_commit commit, cols
-      commit[0].chomp!(' ')
-      commit[-2].sub!(/(\d+)\s(\w)[^\s]+ ago/, '\1\2 ago')
-      commit.each{|c| c.sub!(/\t/, ' ')}
-      commit[-2].sub!(/^ (\w)\w+\s(\w).*,/, ' \1\2,')
-      room = [cols - [commit[0].gsub(/\e\[[\d;]*m/, ''), commit[1..-2]].flatten.map(&:length).inject(&:+), SHORTEST_MESSAGE].max
-      commit.tap {|commit|
-        commit[-1, 0] = if commit[-1].length > room
-          commit.pop[0...(room - 1)] + '…'
-        else
-          commit.pop.ljust(room)
-        end
-      }
+      fixed_part = [commit[GRAPH], commit[REF], commit[DECS], commit[AUTHOR]].join.gsub(/\e\[[\d;]*m/, '').length
+      msg_max = [cols - fixed_part, SHORTEST_MESSAGE].max
+      msg_length = [commit[MSG].length, msg_max].min
+
+      msg = truncate(commit[MSG], msg_length).ljust(msg_max)
+
+      [commit[GRAPH], commit[REF], commit[DECS], msg, commit[AUTHOR]]
+    end
+
+    def self.truncate string, length
+      if string.length > length
+        string[0...(length - 1)] + '…'
+      else
+        string
+      end
     end
   end
 end
