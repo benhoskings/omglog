@@ -4,6 +4,13 @@ module Omglog
   VERSION = '0.0.10'
 
   def run_on system
+
+    if ARGV.length > 1
+      abort "Usage: $ omglog [path]"
+    elsif ARGV.length == 1
+      Dir.chdir(ARGV.shift)
+    end
+
     Omglog::Base.run
     on_terminal_resize { Omglog::Base.run }
     system.on_change { Omglog::Base.run }
