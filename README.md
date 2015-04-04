@@ -7,7 +7,16 @@ A CLI-based git logging interface that uses fseventsd for Apple's OS X or Linux 
 There's no need to download this repo to use `omglog`. You can install the gem like any other: 
 
      gem install omglog
-     
+
+### Updates
+
+New versions of `omglog` come up occasionally. Like any other gem, you should run: 
+
+     gem update omglog
+
+Or update it alongside all other gems: 
+
+     gem update
 
 ## Usage
 
@@ -17,7 +26,9 @@ Just `cd` to whatever directory you want to see visualized and then let the magi
 
      $ omglog
      
-You'll then see a real-time update of your commits and branches. 
+You'll then see a real-time update of your commits and branches. For example: 
+
+![omglog example](images/omglog_example.png)
 
 When you'd like to exit, use your CLI's escape command to do so. On most systems, this will be `control + C`.
 
