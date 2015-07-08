@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'omglog'
-  s.version     = '0.0.10'
+  s.version     = '0.0.11'
   s.summary     = "Live git logging using fseventsd."
   s.description = "Live git logging using fseventsd. omg!"
   s.license     = 'BSD'

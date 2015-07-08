@@ -13,7 +13,17 @@ module Omglog
 
     Omglog::Base.run
     on_terminal_resize { Omglog::Base.run }
-    system.on_change { Omglog::Base.run }
+
+    render_mutex = Mutex.new
+    system.on_change {
+      Thread.new do
+        if render_mutex.try_lock
+          sleep 1
+          Omglog::Base.run
+          render_mutex.unlock
+        end
+      end
+    }
   end
   module_function :run_on
 
