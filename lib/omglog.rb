@@ -80,7 +80,7 @@ module Omglog
         commit[REF],
         commit[DECS],
         commit[MSG],
-        commit[AUTHOR].sub(/(\d+)\s(\w)[^\s]+ ago/, '\1\2 ago').sub(/^ (\w)\w+\s(\w).*,/, ' \1\2,')
+        commit[AUTHOR].sub(/(\d+)\s(\w\w)[^\s]+ ago/, '\1\2 ago').sub(/^ (\w)\w+\s(\w).*,/, ' \1\2,')
       ].each {|c| c.gsub(/\t+/, ' ') }
     end
 
