@@ -26,19 +26,11 @@ If you are using RVM and using unsupported flavors of ruby, the following will a
 
 _This example is using ruby-2.2.0 and the @global gemset._
 
-**Install to global gemset**
+**Install to global gemset and generate wrapper**
 
     $ rvm install ruby-2.2.0
     $ rvm use ruby-2.2.0
     $ rvm @global do gem install omglog
-    $ rvm wrapper ruby-2.2.0@global launch omglog
+    $ rvm wrapper ruby-2.2.0@global --no-prefix omglog
 
-After creating the wrapper, to launch `omglog` via the wrapper run:
-
-    $ launch_omglog
-
-_OR, create an alias for convenience..._
-
-Edit your `.zshrc` or `.bashrc` and add:
-
-    alias omglog='launch_omglog'
+_Make sure you don't have the `omglog` gem installed in any other gemsets, otherwise they may take precendence over this wrapper._
