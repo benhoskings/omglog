@@ -3,14 +3,21 @@
 Start `omglog` in a git repository. It will watch the `.git` directory for changes are re-render the repository graph.
 
 
-##Requirement
+##Requirements
 
-Ruby version that supports file system watcher. _JRuby is currently not supported._
+Ruby version that supports fsevents on OS X, or inotify on linux. _JRuby is not currently supported._
 
 
 ##Install
 
     $ gem install omglog
+
+
+##Usage
+
+In terminal, run from the root a git repository:
+
+    $ omglog
 
 
 ## Use with RVM
@@ -34,4 +41,4 @@ _OR, create an alias for convenience..._
 
 Edit your `.zshrc` or `.bashrc` and add:
 
-    alias omgl='launch_omglog'
+    alias omglog='launch_omglog'
