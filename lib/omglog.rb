@@ -13,7 +13,17 @@ module Omglog
 
     Omglog::Base.run
     on_terminal_resize { Omglog::Base.run }
-    system.on_change { Omglog::Base.run }
+
+    render_mutex = Mutex.new
+    system.on_change {
+      Thread.new do
+        if render_mutex.try_lock
+          sleep 1
+          Omglog::Base.run
+          render_mutex.unlock
+        end
+      end
+    }
   end
   module_function :run_on
 
@@ -70,7 +80,7 @@ module Omglog
         commit[REF],
         commit[DECS],
         commit[MSG],
-        commit[AUTHOR].sub(/(\d+)\s(\w)[^\s]+ ago/, '\1\2 ago').sub(/^ (\w)\w+\s(\w).*,/, ' \1\2,')
+        commit[AUTHOR].sub(/(\d+)\s(\w\w)[^\s]+ ago/, '\1\2 ago').sub(/^ (\w)\w+\s(\w).*,/, ' \1\2,')
       ].each {|c| c.gsub(/\t+/, ' ') }
     end
 
