@@ -1,11 +1,14 @@
 #!/usr/bin/env ruby
 
+run_dir = Dir.pwd
+Dir.chdir File.expand_path('../..', __FILE__)
+$:.unshift './lib'
+
 # Support UTF-8 in author names & commit messages, even when
 # the system locale isn't set to UTF-8.
 Encoding.default_external = Encoding::UTF_8 if RUBY_VERSION > '1.8.7'
 
-$:.unshift File.expand_path('../../lib', __FILE__)
-
+require 'bundler/setup'
 require 'omglog'
 
 abort("Run omglog at the root of the git repo you'd like to watch.") if (ARGV & %w[-h --help help]).any?
@@ -13,10 +16,10 @@ abort("The current directory doesn't look like the root of a git repo.") unless 
 
 if RUBY_PLATFORM[/darwin/i]
   require 'osx'
-  Omglog.run_on Omglog::OSX
+  Omglog.run(dir: run_dir, platform: Omglog::OSX)
 elsif RUBY_PLATFORM[/linux/i]
   require 'linux'
-  Omglog.run_on Omglog::Linux
+  Omglog.run(dir: run_dir, platform: Omglog::Linux)
 else
   abort("Sorry, your system isn't supported yet. It just needs notification support -- i.e. fsevents on OS X, or inotify on Linux.")
 end

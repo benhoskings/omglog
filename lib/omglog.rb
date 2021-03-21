@@ -3,19 +3,21 @@
 module Omglog
   VERSION = '0.0.10'
 
-  def run_on system
+  def run dir:, platform:
 
     if ARGV.length > 1
       abort "Usage: $ omglog [path]"
     elsif ARGV.length == 1
       Dir.chdir(ARGV.shift)
+    else
+      Dir.chdir(dir)
     end
 
     Omglog::Base.run
     on_terminal_resize { Omglog::Base.run }
-    system.on_change {|_| Omglog::Base.run }
+    platform.on_change {|_| Omglog::Base.run }
   end
-  module_function :run_on
+  module_function :run
 
   def on_terminal_resize &block
     rendering = true
