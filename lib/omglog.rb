@@ -13,7 +13,7 @@ module Omglog
 
     Omglog::Base.run
     on_terminal_resize { Omglog::Base.run }
-    system.on_change { Omglog::Base.run }
+    system.on_change {|_| Omglog::Base.run }
   end
   module_function :run_on
 
